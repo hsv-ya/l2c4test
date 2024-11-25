@@ -455,6 +455,26 @@ static void broadcast_(struct state *state, struct character *character, int _en
     }
 }
 
+static void broadcast_without_me_(struct state *state, struct character *character, int _encrypt, ...)
+{
+    assert(state);
+    assert(character);
+
+    for (size_t i = 0; i < countof(state->characters); i++) {
+        if (!state->characters[i].active)
+            continue;
+        struct connection *conn = state->characters[i].conn;
+        if (!conn)
+            continue;
+        if (character->conn == conn)
+            continue;
+        va_list va;
+        va_start(va, _encrypt);
+        push_response_va(conn, _encrypt, va);
+        va_end(va);
+    }
+}
+
 static void encrypt(struct connection *conn, byte *packet)
 {
     assert(conn);
@@ -1662,6 +1682,17 @@ static void handle_leave_world(struct state *state, struct connection *conn)
     push_response(conn, 1,
                   "%h", 0,
                   "%c", 0x7e);
+
+    // Maybe you decided to quit the game in character selection mode
+    if (!conn->character)
+        return;
+
+    broadcast_without_me(state,
+              conn->character, 1,
+              "%h", 0,
+              "%c", 0x12,
+              "%u", get_character_id(state, conn->character),
+              "%u", 0);
 }
 
 static void handle_restart(struct state *state, struct connection *conn)
@@ -1673,6 +1704,13 @@ static void handle_restart(struct state *state, struct connection *conn)
                   "%h", 0,
                   "%c", 0x5f,
                   "%u", 1);
+
+    broadcast_without_me(state,
+              conn->character, 1,
+              "%h", 0,
+              "%c", 0x12,
+              "%u", get_character_id(state, conn->character),
+              "%u", 0);
 
     handle_send_character_list(state, conn);
 }

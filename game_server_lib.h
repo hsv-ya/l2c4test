@@ -62,6 +62,9 @@ typedef float seconds;
 #define broadcast(state, character, _encrypt, ...) \
     broadcast_((state), (character), (_encrypt), __VA_ARGS__, NULL)
 
+#define broadcast_without_me(state, character, _encrypt, ...) \
+    broadcast_without_me_((state), (character), (_encrypt), __VA_ARGS__, NULL)
+
 #define coroutine(x)                    \
     struct coroutine *__coro = &(x);    \
     switch (__coro->line)               \
