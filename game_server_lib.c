@@ -198,7 +198,8 @@ static void send_responses(struct wqueue *q, void *w)
     struct connection *conn = (struct connection *) w;
     void *head = conn->to_send + conn->sent;
     unsigned long long to_send = conn->to_send_count - conn->sent;
-    trace("sending %d bytes of data to %d" nl, (s32) to_send, conn->socket);
+    if (to_send)
+        trace("sending %d bytes of data to %d" nl, (s32) to_send, conn->socket);
     conn->sent += net_send(conn->socket, head, to_send);
 
     // all data has been sent, reset the counters.
