@@ -538,7 +538,7 @@ static void handle_request_by_type(struct state *state, struct connection *conn)
     byte *request = conn->request;
     
     byte type = *(request + 2);
-    trace("received packet is of type %#04x" nl, (int) type);
+    trace("received packet is of type 0x%02x" nl, type);
     
     // check if the received packet matches the expected packet.
     // if it doesn't, drop/close the connection.
@@ -1673,6 +1673,7 @@ static void handle_restart(struct state *state, struct connection *conn)
                   "%h", 0,
                   "%c", 0x5f,
                   "%u", 1);
+
     handle_send_character_list(state, conn);
 }
 
@@ -2072,6 +2073,7 @@ static void send_attr_status(struct state *state, struct character *from, struct
 {
     assert(state);
     assert(status);
+
     if (!from || !to || !from->active || !to->active || !to->conn)
         return;
     
