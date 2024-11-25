@@ -48,19 +48,19 @@ typedef float seconds;
 #define countof(x) (sizeof(x) / sizeof(*(x)))
 
 #define bprintf(dest, n, ...) \
-    bprintf_((dest), (n), __VA_ARGS__, 0)
+    bprintf_((dest), (n), __VA_ARGS__, NULL)
 
 #define bscanf(src, n, ...) \
-    bscanf_((src), (n), __VA_ARGS__, 0)
+    bscanf_((src), (n), __VA_ARGS__, NULL)
 
 #define pscanf(src, ...) \
-    bscanf_((src) + 3, packet_size(src) - 3, __VA_ARGS__, 0)
+    bscanf_((src) + 3, packet_size(src) - 3, __VA_ARGS__, NULL)
 
 #define push_response(conn, _encrypt, ...) \
-    push_response_((conn), (_encrypt), __VA_ARGS__, 0)
+    push_response_((conn), (_encrypt), __VA_ARGS__, NULL)
 
 #define broadcast(state, character, _encrypt, ...) \
-    broadcast_((state), (character), (_encrypt), __VA_ARGS__, 0)
+    broadcast_((state), (character), (_encrypt), __VA_ARGS__, NULL)
 
 #define coroutine(x)                    \
     struct coroutine *__coro = &(x);    \
