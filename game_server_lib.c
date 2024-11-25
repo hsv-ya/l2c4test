@@ -828,8 +828,8 @@ static void handle_character_creation(struct state *state, struct connection *co
     u32 m_atk_speed = 10;
     u32 m_def = 10;
     u32 karma = 10;
-    u32 run_speed = 20;
-    u32 walk_speed = 10;
+    u32 run_speed = 126;
+    u32 walk_speed = 88;
     double collision_radius = 20.0;
     double collision_height = 20.0;
     u32 access_level = 1;
