@@ -681,7 +681,7 @@ static void handle_auth(struct state *state, struct connection *conn, byte *req)
            "%u", &conn->login_ok1,
            "%u", &conn->login_ok2);
 
-    trace("username is %S" nl, conn->username);
+    trace("username is %ls" nl, conn->username);
 
     char access_path[512] = {0};
     snprintf(access_path, 

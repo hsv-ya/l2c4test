@@ -452,7 +452,7 @@ static void handle_server_list_request(struct connection *conn)
             int matched = fscanf(servers_file, 
                                  "id=%d" nl
                                  "ip=%s" nl
-                                 "port=%d" nl
+                                 "port=%u" nl
                                  // "age_limit=%d" nl
                                  // "pvp=%d" nl
                                  "max_players=%d" nl
@@ -508,7 +508,7 @@ static void handle_server_list_request(struct connection *conn)
         if (default_servers_file) {
             fprintf(default_servers_file, 
                     "id=%d" nl
-                    "ip=0.0.0.0" nl
+                    "ip=127.0.0.1" nl
                     "port=%d" nl
                     "max_players=%d" nl
                     "status=%d" nl,
@@ -523,7 +523,7 @@ static void handle_server_list_request(struct connection *conn)
                   "create a data/servers.txt file manually with:" nl
                   nl
                   "id=%d" nl
-                  "ip=0.0.0.0" nl
+                  "ip=127.0.0.1" nl
                   "port=%d" nl
                   "max_players=%d" nl
                   "status=%d" nl
