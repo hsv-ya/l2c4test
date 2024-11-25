@@ -637,6 +637,10 @@ return; \
             case 0x37:
             handle_deselect_target(state, conn);
             break;
+            // say
+            case 0x38:
+            handle_say(state, conn, request);
+            break;
             default:
             break;
         }
@@ -1873,6 +1877,63 @@ static void handle_deselect_target(struct state *state, struct connection *conn)
                   "%u", conn->character->z);
 }
 
+static void handle_say(struct state *state, struct connection *conn, byte *req)
+{
+    assert(state);
+    assert(conn);
+    assert(req);
+
+    wchar_t msg[256] = {0};
+    u32 type_msg = 0;
+
+    byte *next = pscanf(req,
+                        "%ls", countof(msg), msg,
+                        "%u", &type_msg);
+
+    if (type_msg == 2) { // private
+        wchar_t char_name[256] = { L"->" };
+        wchar_t target_name[256] = {0};
+
+        pscanf(next - 3,
+               "%ls", countof(target_name), target_name);
+
+        wcscat_u16(char_name, target_name);
+
+        push_response(conn, 1,
+              "%h", 0,
+              "%c", 0x4a,
+              "%u", get_character_id(state, conn->character),
+              "%u", type_msg,
+              "%ls", countof(char_name), char_name,
+              "%ls", countof(msg), msg);
+
+        struct character *player = get_character_by_name(state, target_name);
+        if (player) {
+            if (player->conn) {
+                push_response(player->conn, 1,
+                      "%h", 0,
+                      "%c", 0x4a,
+                      "%u", get_character_id(state, conn->character),
+                      "%u", type_msg,
+                      "%ls", countof(conn->character->name), conn->character->name,
+                      "%ls", countof(msg), msg);
+            }
+
+        }
+
+        return;
+    }
+
+    broadcast(state,
+              conn->character, 1,
+              "%h", 0,
+              "%c", 0x4a,
+              "%u", get_character_id(state, conn->character),
+              "%u", type_msg,
+              "%ls", countof(conn->character->name), conn->character->name,
+              "%ls", countof(msg), msg);
+}
+
 static void move_to(struct state *state, struct character *character, s32 x, s32 y, s32 z, u32 offset, u32 target_id, int queue_action)
 {
     assert(state);
@@ -2332,6 +2393,23 @@ static struct character *get_character_by_id(struct state *state, u32 id)
     return state->characters + id;
 }
 
+static struct character *get_character_by_name(struct state *state, wchar_t *name)
+{
+    assert(state);
+    assert(name);
+
+    // go through all players
+    for (size_t i = 0; i < countof(state->characters); i++) {
+        struct character *player = state->characters + i;
+        if (player->active && player->conn) {
+            if (wcscmp_u16(player->name, name) == 0)
+                return player;
+        }
+    }
+
+    return 0;
+}
+
 static u32 get_character_id(struct state *state, struct character *src)
 {
     assert(state);
@@ -2601,4 +2679,41 @@ static u32 distance_between_characters(struct character *a, struct character *b)
     u32 d2 = sqr(dx) + sqr(dy) + sqr(dz);
     
     return d2;
+}
+
+static void wcscat_u16(wchar_t *dest, const wchar_t *source) {
+    u16 *tail = dest;
+    u16 *src = (u16 *) source;
+
+    // find end in destination
+    while (*tail)
+        tail++;
+    /*
+     * wchar_t is 2 bytes in windows and 4
+     * in linux, which means, we can't use
+     * predefined functions such as wcsncpy.
+     */
+    while (*src) {
+        *tail = *src;
+        tail++;
+        src++;
+    }
+    /*
+     * null terminator.
+     */
+    *tail = 0;
+}
+
+static int wcscmp_u16(wchar_t *dest, const wchar_t *source) {
+    u16 *tail = dest;
+    u16 *src = (u16 *) source;
+
+    while (*tail && *src) {
+        if (*tail != *src)
+            return 1;
+        tail++;
+        src++;
+    }
+
+    return 0;
 }

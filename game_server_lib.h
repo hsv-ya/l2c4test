@@ -338,6 +338,7 @@ static void handle_validate_position(struct state *state, struct connection *con
 static void handle_show_map(struct state *state, struct connection *conn);
 static void handle_action(struct state *state, struct connection *conn, byte *req);
 static void handle_deselect_target(struct state *state, struct connection *conn);
+static void handle_say(struct state *state, struct connection *conn, byte *req);
 
 // order character to walk to a point.
 static void move_to(struct state *state, struct character *src, s32 x, s32 y, s32 z, u32 offset, u32 target_id, int queue_action);
@@ -355,6 +356,7 @@ static void send_attr_status(struct state *state, struct character *from, struct
 
 // get character by id. if none is found, null will be returned.
 static struct character *get_character_by_id(struct state *state, u32 id);
+static struct character *get_character_by_name(struct state *state, wchar_t *name);
 static u32 get_character_id(struct state *state, struct character *src);
 
 static void moving_update(struct state *state, struct character *character);
@@ -362,3 +364,6 @@ static void attacking_update(struct state *state, struct character *character);
 
 static u32 distance_between(s32 x, s32 y, s32 z, s32 x2, s32 y2, s32 z2);
 static u32 distance_between_characters(struct character *a, struct character *b);
+
+static void wcscat_u16(wchar_t *dest, const wchar_t *source);
+static int wcscmp_u16(wchar_t *dest, const wchar_t *source);
