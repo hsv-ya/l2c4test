@@ -2,4 +2,9 @@
 *.exp
 *.pdb
 *.ilk
-bin/data/*
+bin/*
+obj/*
+*.workspace
+*.cbp
+*.depend
+*.layout
