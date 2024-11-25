@@ -1,30 +1,37 @@
 lineage 2 server emulator for the chronicle 4 written in c just for fun.
 
 in windows, how to use?
-- update your Windows/System32/drivers/etc/hosts file to 
+- update your Windows/System32/drivers/etc/hosts file to
   include: 127.0.0.1 l2authd.lineage2.com
 - to run the login server, cd bin && login_server.exe
 - to run the game server, cd bin && game_server.exe
-- that's it, open your lineage 2 client and enjoy. accounts are created automatically
+- that's it, open your lineage 2 client and enjoy.
 
-in windows, how to build?
+in windows, how to build? - first variant
 - download visual studio
 - update your environment path to include the folder containing the file vcvarsall.bat
 - run build.bat
+
+in windows, how to build? - second variant
+- download mingw64
+- update your environment path to include the folder containing the file gcc.exe
+- run buildmingw.cmd
 
 in linux, how to use?
 - update /etc/hosts to include: 127.0.0.1 l2authd.lineage2.com
 - to run the login server, cd bin && ./login_server
 - to run the game server, cd bin && ./game_server
-- that's it, open your lineage 2 client and enjoy. accounts are created automatically
+- that's it, open your lineage 2 client and enjoy
 
 in linux, how to build?
 - install openssl lib (sudo apt install libssl-dev)
 - run bash ./build.sh
 
 notes
+- accounts are created automatically
 - the login server uses the port 2106
-- the game server will automatically use the port 7777 
+- the game server will automatically use the port 7777
+- use only client lineage 2 chronicle 4 scions of destiny (protocol 656)
 
 credits
 - l2j: https://www.l2jserver.com
