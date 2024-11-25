@@ -1610,8 +1610,10 @@ static void handle_enter_world(struct state *state, struct connection *conn)
         struct character *npc = state->characters + i;
         if (!npc->active)
             continue;
-        if (npc->conn)
+        if (npc->conn) {
+            broadcast_char_info(state, npc);
             continue;
+        }
         u32 attackable = 1;
         push_response(conn, 1,
                       "%h", 0,
@@ -2104,6 +2106,91 @@ static void broadcast_char_info(struct state *state, struct character *src)
     }
     
     // send char info...
+    broadcast_without_me(state,
+              src, 1,
+              "%h", 0,
+              "%c", 0x03,
+              "%u", src->x,
+              "%u", src->y,
+              "%u", src->z,
+              "%u", src->heading,
+              "%u", get_character_id(state, src),
+              "%ls", countof(src->name), src->name,
+              "%u", src->race_id,
+              "%u", src->sex,
+              "%u", src->class_id,
+              "%u", 0,
+              "%u", 0,
+              "%u", 0,
+              "%u", 0,
+              "%u", 0,
+              "%u", 0,
+              "%u", 0,
+              "%u", 0,
+              "%u", 0,
+              "%u", 0,
+              "%u", 0,
+              "%u", 0,
+              "%u", src->karma,
+              "%u", src->m_atk_speed,
+              "%u", src->p_atk_speed,
+              "%u", 0,
+              "%u", src->karma,
+              "%u", src->run_speed,
+              "%u", src->walk_speed,
+              // swim speed
+              "%u", src->run_speed,
+              "%u", src->walk_speed,
+              // fly speed
+              "%u", src->run_speed,
+              "%u", src->walk_speed,
+              "%u", src->run_speed,
+              "%u", src->walk_speed,
+              "%lf", 1.0,
+              "%lf", 1.0,
+              "%lf", src->collision_radius,
+              "%lf", src->collision_height,
+              "%u", src->hair_style_id,
+              "%u", src->hair_color_id,
+              "%u", src->face_id,
+              "%ls", countof(src->title), src->title,
+              "%u", src->clan_id,
+              "%u", src->crest_id,
+              "%u", src->ally_id,
+              "%u", src->ally_crest_id,
+              "%u", 0,
+              "%c", 1,
+              "%c", 1,
+              "%c", src->action_type == attacking,
+              "%c", src->current_hp <= 0.0,
+              "%c", 0,
+              "%c", 0,
+              "%c", 0,
+              "%h", 0,
+              "%c", 0,
+              "%u", 0,
+              "%c", src->recommendations_left,
+              "%h", src->recommendations_have,
+              "%u", src->class_id,
+              "%u", (u32) src->max_cp,
+              "%u", (u32) src->current_cp,
+              "%c", 0,
+              "%c", 0,
+              "%u", src->clan_crest_large_id,
+              "%c", 0,
+              "%c", 0,
+              "%c", 0,
+              "%u", src->fish_x,
+              "%u", src->fish_y,
+              "%u", src->fish_z,
+              "%u", src->name_color,
+              "%c", 0,
+              "%u", 0,
+              "%u", 0,
+              "%u", 0,
+              "%u", 0,
+              "%u", 0, // title color
+              "%u", 0);
 }
 
 static void send_attr_status(struct state *state, struct character *from, struct character *to,
