@@ -2,8 +2,12 @@
 *.exp
 *.pdb
 *.ilk
-bin/*
-obj/*
+/bin
+
+#
+# Code::Blocks files
+#
+/obj
 *.workspace
 *.cbp
 *.depend
